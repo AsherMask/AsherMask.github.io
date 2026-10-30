@@ -163,11 +163,14 @@ function handleProjectileObjectCollision(projectileIndex, gameObjectIndex) {
   if (gameObjects[gameObjectIndex].hp === 0) {
     gameObjects[gameObjectIndex].toRemove = true;
     score += gameObjects[gameObjectIndex].projectileScoreChange;
-    health += gameObjects[gameObjectIndex].projectileHealthChange;
+    health = Math.max(
+      0,
+      Math.min(100, health + gameObjects[gameObjectIndex].projectileHealthChange)
+    );
   }
 }
 
-function isCollidingWithProjectile(gameObject, projectile) {
+function isCollidingWithProjectile(projectile, gameObject) {
   // collisions are complicated because we draw game objects from the bottom up and the projectiles from the center
   return (
     projectile.x - projectile.width / 2 < gameObject.x + gameObject.hitWidth &&
@@ -286,7 +289,7 @@ function drawBackground() {
   ctx.fillRect(0, 0, w, groundY);
 
   ctx.fillStyle = THEME.ground;
-  ctx.fillRect(0, groundY, w, groundY + groundHeight);
+  ctx.fillRect(0, groundY, w, groundHeight);
 
   ctx.fillStyle = THEME.lowerBackground;
   ctx.fillRect(0, groundY + groundHeight, w, h);
@@ -308,7 +311,9 @@ function drawScenery() {
       ctx.drawImage(
         image,
         instance.x,
-        instance.y ? instance.y - instance.height : groundY - instance.height,
+        instance.y !== undefined
+          ? instance.y - instance.height
+          : groundY - instance.height,
         instance.width,
         instance.height
       );
@@ -628,28 +633,8 @@ function applyDefaultInteractableUpdateValues(entity) {
       return {
         type: entity.type,
         kind: entity.kind,
-        imageUrl: defaults.imageUrl,
-        x: entity.x,
-        y: entity.y,
-        width: entity.width || defaults.width,
-        height: entity.height || defaults.height,
-        hitWidth: entity.hitWidth || defaults.hitWidth,
-        hitHeight: entity.hitHeight || defaults.hitHeight,
-        speedX: entity.speedX || defaults.speedX,
-        speedY: entity.speedY || defaults.speedY,
-        minY: entity.minY || defaults.minY,
-        maxY: entity.maxY || defaults.maxY,
-        contactHealthChange:
-          entity.contactHealthChange || defaults.contactHealthChange,
-        contactScoreChange:
-          entity.contactScoreChange || defaults.contactScoreChange,
-        projectileHealthChange:
-          entity.projectileHealthChange || defaults.projectileHealthChange,
-        projectileScoreChange:
-          entity.projectileScoreChange || defaults.projectileScoreChange,
-        collect:
-          entity.collect === undefined ? defaults.collect : entity.collect,
-        hp: entity.hp === undefined ? defaults.hp : entity.hp, // need to allow 0 hp
+        ...defaults,
+        ...entity,
       };
     }
   }
@@ -677,7 +662,7 @@ function drawHUD() {
     HUD_SETTINGS.scorePosition.y
   );
 
-  // Draw health bar
+  // Draw fuel gauge
   const healthBarWidth = HUD_SETTINGS.healthBarSize.width;
   const healthBarHeight = HUD_SETTINGS.healthBarSize.height;
   const healthBarX = HUD_SETTINGS.healthBarPosition.x;
@@ -687,16 +672,16 @@ function drawHUD() {
   ctx.fillStyle = HUD_SETTINGS.healthBarBackgroundColor;
   ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
 
-  // Draw current health
+  // Draw current fuel
   ctx.fillStyle = HUD_SETTINGS.healthBarFillColor;
   const currentHealthWidth = (health / 100) * healthBarWidth;
   ctx.fillRect(healthBarX, healthBarY, currentHealthWidth, healthBarHeight);
 
-  // Draw health text and show digits only up to 2 decimal places
+  // Draw remaining fuel percentage
   ctx.fillStyle = HUD_SETTINGS.textColor;
   ctx.font = HUD_SETTINGS.textFont;
   ctx.fillText(
-    `${health.toFixed(2)}`,
+    `Fuel: ${health.toFixed(0)}%`,
     healthBarX + 5,
     healthBarY + healthBarHeight - 5
   );

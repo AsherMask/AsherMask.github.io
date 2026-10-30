@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 350">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#111b46"/>
+      <stop offset="1" stop-color="#384879"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#b3d9ff" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#b3d9ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1400v350H0z"/>
+  <circle cx="250" cy="145" r="115" fill="url(#glow)"/>
+  <circle cx="250" cy="145" r="2" fill="#fff"/>
+  <circle cx="115" cy="68" r="2" fill="#fff"/>
+  <circle cx="420" cy="48" r="1.5" fill="#fff"/>
+  <circle cx="520" cy="230" r="2" fill="#d7e7ff"/>
+  <circle cx="670" cy="103" r="1.5" fill="#fff"/>
+  <circle cx="810" cy="54" r="2" fill="#fff"/>
+  <circle cx="930" cy="190" r="1.5" fill="#d7e7ff"/>
+  <circle cx="1065" cy="82" r="2" fill="#fff"/>
+  <circle cx="1210" cy="250" r="1.5" fill="#fff"/>
+  <circle cx="1340" cy="120" r="2" fill="#d7e7ff"/>
+  <path fill="#fff" d="m360 148 2 6 6 2-6 2-2 6-2-6-6-2 6-2zm428 115 2 6 6 2-6 2-2 6-2-6-6-2 6-2zm398-190 2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>
+</svg>

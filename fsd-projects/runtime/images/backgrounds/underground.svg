@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 350">
+  <defs>
+    <linearGradient id="earth" x2="0" y2="1">
+      <stop stop-color="#314454"/>
+      <stop offset=".2" stop-color="#233342"/>
+      <stop offset="1" stop-color="#101c2b"/>
+    </linearGradient>
+    <pattern id="soil" width="72" height="48" patternUnits="userSpaceOnUse">
+      <path d="M4 13h18m25 19h17M30 4l-6 6m35 26 6 7" stroke="#8194a0" stroke-opacity=".22" stroke-width="3"/>
+      <circle cx="40" cy="12" r="2" fill="#a8bac2" fill-opacity=".25"/>
+    </pattern>
+  </defs>
+  <path fill="url(#earth)" d="M0 0h1400v350H0z"/>
+  <path fill="url(#soil)" d="M0 0h1400v350H0z"/>
+  <path d="M0 3h1400" stroke="#a2c28b" stroke-width="6"/>
+</svg>

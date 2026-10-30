@@ -41,6 +41,7 @@ const projectileFlickerRate = 2.5; // the amount of size change per frame for pr
 
 let score = 0;
 let health = 100;
+let completedLoops = 0;
 
 /////////////////////////////////////////////////
 //////////ONLY CHANGE ABOVE THIS POINT///////////

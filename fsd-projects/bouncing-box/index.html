@@ -1,120 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bouncing Box</title>
     <script src="jquery.min.js"></script>
     <style>
-      .box {
-        width: 70px;
-        height: 70px;
-        background-color: teal;
-        font-size: 300%;
-        text-align: center;
-        user-select: none;
-        display: block;
-        position: absolute;
-        top: 100px;
-        left: 0px;
-        transition: left 0.04s linear;
+      * {
+        box-sizing: border-box;
       }
 
-      .board {
+      body.board {
+        width: 100%;
         height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background-color: #132c3a;
+        background-image: radial-gradient(#ffffff25 1px, transparent 1px),
+          linear-gradient(135deg, #132c3a, #1d5b68);
+        background-size: 24px 24px, 100% 100%;
+      }
+
+      .home-link {
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+        margin: 12px 16px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        background: #1f2937;
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .game-status {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        color: white;
+        text-align: right;
+        text-shadow: 0 1px 3px #000;
+      }
+
+      .box {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        display: grid;
+        width: min(70px, 18vmin);
+        height: min(70px, 18vmin);
+        place-items: center;
+        border: 2px solid #fff;
+        border-radius: 12px;
+        background-color: teal;
+        background-image: linear-gradient(145deg, #ffffff55, transparent 60%);
+        box-shadow: 0 8px 20px #0006;
+        color: white;
+        font-size: clamp(12px, 4vmin, 24px);
+        font-weight: 700;
+        user-select: none;
+        cursor: pointer;
+      }
+
+      .game-over {
+        position: fixed;
+        inset: 0;
+        z-index: 3;
+        display: grid;
+        place-content: center;
+        gap: 12px;
+        background: #000a;
+        color: white;
+        text-align: center;
+      }
+
+      .game-over[hidden] {
+        display: none;
+      }
+
+      .game-controls button {
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 6px;
+        background: #20b2aa;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
       }
     </style>
-    <!-- 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
   </head>
 
   <body class="board">
-    <div style="padding: 12px 16px 0; position: relative; z-index: 10;">
-      <a href="../../index.html" style="display:inline-block; padding:10px 16px; background:#1f2937; color:#fff; border-radius:8px; text-decoration:none; font-weight:700; font-family:Arial,sans-serif;">Home</a>
+    <a class="home-link" href="../../index.html">Home</a>
+    <div class="game-status" aria-live="polite">
+      <div>Score: <span id="score">0</span></div>
+      <div>Misses: <span id="misses">0</span>/10</div>
+      <div>Click the box before it gets away!</div>
     </div>
-    <!-- HTML for the box -->
-    <div class="box">?</div>
+    <div class="box" role="button" tabindex="0" aria-label="Click the box">
+      0
+    </div>
+    <div class="game-over game-controls" role="dialog" aria-modal="true" hidden>
+      <h1>Game over!</h1>
+      <p>You missed 10 times. Final score: <span id="final-score">0</span></p>
+      <button id="restart" type="button">Play again</button>
+    </div>
 
     <script>
       (function () {
         "use strict";
         /* global jQuery */
 
-        //////////////////////////////////////////////////////////////////
-        /////////////////// SETUP DO NOT DELETE //////////////////////////
-        //////////////////////////////////////////////////////////////////
-
-        var box = jQuery(".box"); // reference to the HTML .box element
-        var board = jQuery(".board"); // reference to the HTML .board element
-        var boardWidth = board.width(); // the maximum X-Coordinate of the screen
-
-        // update the boardWidth variable when the window is resized
-        jQuery(window).on("resize", function () {
-          boardWidth = board.width();
-        });
-
-        // Update the box more often for smoother motion at a faster pace
-        setInterval(update, 20);
-
-        // Every time the box is clicked, call the handleBoxClick Function (see below)
-        box.on("click", handleBoxClick);
-
-        // moves the Box to a new position on the screen along the X-Axis
-        function moveBoxTo(newPositionX) {
-          box.css("left", newPositionX);
-        }
-
-        // changes the text displayed on the Box
-        function changeBoxText(newText) {
-          box.text(newText);
-        }
-
-        //////////////////////////////////////////////////////////////////
-        /////////////////// YOUR CODE BELOW HERE /////////////////////////
-        //////////////////////////////////////////////////////////////////
-
-        // TODO 2 - Variable declarations
+        var box = jQuery(".box");
+        var board = jQuery(".board");
+        var scoreDisplay = jQuery("#score");
+        var missesDisplay = jQuery("#misses");
+        var gameOverScreen = jQuery(".game-over");
         var positionX = 0;
-        var direction = 1;
-        var speed = 8;
+        var positionY = 100;
+        var directionX = 1;
+        var directionY = 1;
+        var speedX = 8;
+        var speedY = 5;
+        var speedIncrease = 1.5;
         var score = 0;
+        var misses = 0;
+        var boardWidth = board.width();
+        var boardHeight = jQuery(window).height();
+        var topInset = 80;
+        var interval;
+        var gameActive = true;
 
-        changeBoxText(score);
+        function boxWidth() {
+          return box.outerWidth();
+        }
 
-        /**
-         * This Function will be called 20 times/second.
-         * Each time it is called, it should move the Box to a new location.
-         * If the box drifts off the screen, turn it around!
-         */
+        function boxHeight() {
+          return box.outerHeight();
+        }
+
+        function topBoundary() {
+          return Math.min(topInset, Math.max(0, boardHeight - boxHeight()));
+        }
+
+        function moveBoxTo(newPositionX, newPositionY) {
+          box.css({ left: newPositionX, top: newPositionY });
+        }
+
         function update() {
-          if (positionX <= 0) {
-            positionX = 0;
-            direction = 1;
-          } else if (positionX >= boardWidth - box.width()) {
-            positionX = boardWidth - box.width();
-            direction = -1;
+          positionX += speedX * directionX;
+          positionY += speedY * directionY;
+
+          if (positionX <= 0 || positionX >= boardWidth - boxWidth()) {
+            positionX = Math.max(0, Math.min(positionX, boardWidth - boxWidth()));
+            directionX *= -1;
+          }
+          if (
+            positionY <= topBoundary() ||
+            positionY >= boardHeight - boxHeight()
+          ) {
+            positionY = Math.max(
+              topBoundary(),
+              Math.min(positionY, boardHeight - boxHeight())
+            );
+            directionY *= -1;
           }
 
-          positionX += speed * direction;
-          moveBoxTo(positionX);
+          moveBoxTo(positionX, positionY);
         }
 
-        /**
-         * This Function will be called each time the box is clicked.
-         * Each time it is called, it should perform each of the following actions:
-         * - increase the points total
-         * - increase the speed
-         * - move the box to the left side of the screen.
-         */
-        function handleBoxClick() {
+        function getRandomColor() {
+          var red = Math.floor(Math.random() * 256);
+          var green = Math.floor(Math.random() * 256);
+          var blue = Math.floor(Math.random() * 256);
+          return "rgb(" + red + ", " + green + ", " + blue + ")";
+        }
+
+        function handleBoxClick(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!gameActive) return;
+
           score += 1;
-          speed += 1.5;
-          changeBoxText(score);
-          positionX = 0;
-          direction = 1;
-          moveBoxTo(positionX);
+          speedX += speedIncrease;
+          speedY += speedIncrease;
+          if (score % 3 === 0) {
+            speedIncrease += 0.5;
+          }
+
+          positionX = Math.random() * Math.max(0, boardWidth - boxWidth());
+          positionY =
+            topBoundary() +
+            Math.random() *
+              Math.max(0, boardHeight - boxHeight() - topBoundary());
+          directionX = Math.random() < 0.5 ? -1 : 1;
+          directionY = Math.random() < 0.5 ? -1 : 1;
+
+          box.css("background-color", getRandomColor());
+          box.text(score);
+          scoreDisplay.text(score);
+          moveBoxTo(positionX, positionY);
         }
 
+        function endGame() {
+          if (!gameActive) return;
+          gameActive = false;
+          window.clearInterval(interval);
+          jQuery("#final-score").text(score);
+          gameOverScreen.prop("hidden", false);
+        }
 
-        
+        function restartGame() {
+          window.clearInterval(interval);
+          positionX = 0;
+          positionY = Math.min(
+            topBoundary() + 20,
+            Math.max(0, boardHeight - boxHeight())
+          );
+          directionX = 1;
+          directionY = 1;
+          speedX = 8;
+          speedY = 5;
+          speedIncrease = 1.5;
+          score = 0;
+          misses = 0;
+          gameActive = true;
+          box.text(score).css("background-color", "teal");
+          scoreDisplay.text(score);
+          missesDisplay.text(misses);
+          gameOverScreen.prop("hidden", true);
+          moveBoxTo(positionX, positionY);
+          interval = window.setInterval(update, 20);
+        }
+
+        box.on("click", handleBoxClick);
+        box.on("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            handleBoxClick(event);
+          }
+        });
+
+        board.on("click", function (event) {
+          if (
+            !gameActive ||
+            jQuery(event.target).closest(".box, .game-controls, .home-link")
+              .length
+          ) {
+            return;
+          }
+          misses += 1;
+          missesDisplay.text(misses);
+          if (misses >= 10) endGame();
+        });
+
+        jQuery("#restart").on("click", restartGame);
+        jQuery(window).on("resize", function () {
+          boardWidth = board.width();
+          boardHeight = jQuery(window).height();
+          positionX = Math.min(positionX, Math.max(0, boardWidth - boxWidth()));
+          positionY = Math.min(
+            positionY,
+            Math.max(topBoundary(), boardHeight - boxHeight())
+          );
+          moveBoxTo(positionX, positionY);
+        });
+
+        moveBoxTo(positionX, positionY);
+        interval = window.setInterval(update, 20);
       })();
     </script>
   </body>

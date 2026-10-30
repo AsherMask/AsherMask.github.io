@@ -1,31 +1,27 @@
 # Bouncing Box
 
-A playful browser game where a box bounces across the screen, speeds up with each click, and keeps score as you play.
+A keyboard-accessible browser game: click the moving box to score, then avoid
+mis-clicking ten times. The box bounces around the play area, changes color and
+gets faster as your score grows.
 
-## Overview
+## Run the game
 
-This project is a simple introduction to interactive web game development using HTML, CSS, and JavaScript. The box moves across the game board, and the player can click it to reset its position and increase the score.
+Open `index.html` in a browser or use Live Server from VS Code. No build step or
+package installation is required.
 
-## Features
+## How to play
 
-- Animated box movement across the screen
-- Score tracking and increasing difficulty
-- Bounce behavior off the edges of the play area
-- Simple click-to-reset interactions
+- Click the box (or focus it and press Enter/Space) to score and move it to a
+  random position.
+- Every click changes the box color. The speed increase grows every three
+  successful clicks.
+- Click the background to record a miss. Ten misses end the round.
+- Choose **Play again** to reset the score, speed, and miss count.
+- The box bounces off all four play-area edges and remains in bounds when the
+  window is resized.
 
-## How to Run
+## Project files
 
-1. Open the project folder in VS Code.
-2. Open `fsd-projects/bouncing-box/index.html` in a browser or with Live Server.
-3. Refresh the page to see your changes.
-
-## Controls
-
-- Click the box to reset its position and update the score.
-- Watch the box speed up as the game continues.
-
-## Project Files
-
-- `index.html` — page layout and game setup
-- `jquery.min.js` — jQuery library used for DOM manipulation
-- `README.md` — project overview and notes
+- `index.html` — game markup, styles, and gameplay
+- `jquery.min.js` — local jQuery dependency
+- `BONUS_CHALLENGES.md` — completed challenge list

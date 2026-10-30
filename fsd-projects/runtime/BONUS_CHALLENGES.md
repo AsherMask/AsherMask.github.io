@@ -1,37 +1,39 @@
-# Bonus Challenges
+# Runtime Neo Bonus Challenges
 
-## Overview
+The five bonus challenges are implemented in the game.
 
-This document contains optional bonus challenges to extend the Runtime Neo auto-runner game.
+## 1. Add additional kinds for object types
 
-## Challenges
+- `movingSpikes` adds a new obstacle kind with its own SVG sprite.
+- `fuelCell` adds a collectible fuel power-up with its own SVG sprite.
+- Both kinds are defined in `DEFAULT_VALUES` and appear in the level data.
 
-### Challenge 1: Add Additional Kinds for Object Types
+## 2. Make the game endless
 
-- Upload new images for different object types (e.g., power-ups, obstacles)
-- In the `levels.js` file, add the new "kind" into the `DEFAULT_VALUES` object
-- Update your level game object lists to include the new kinds
+Completing the last level returns to Level 1. Each completed loop increases
+level speed and fuel consumption, and the level HUD shows the loop number.
 
-### Challenge 2: Make the Game Endless!
+## 3. Add vertically moving objects
 
-- Instead of setting the win condition to be true after completing all levels, loop back to the first level
-- Increase the difficulty with each loop by increasing the level speed or even adding more obstacles dynamically
+Objects can use `speedY`, `minY`, and `maxY` in `levels.js`. Their vertical
+movement reverses at the configured bounds. Several moving hazards and enemies
+demonstrate the behavior.
 
-### Challenge 3: Make Obstacles That Move Vertically
+## 4. Create more complex backgrounds
 
-- Make use of the `velocityY` and optionally the `minY` and `maxY` properties that objects can be given in `levels.js`.
-- Update the `moveGameObjects` function in `student.js` to handle vertical movement.
-- This can be done for any type of object.
+The game uses a custom star-field SVG, drifting moons, parallax buildings and
+lamps, and a separate underground layer. Background elements loop and selected
+layers also move vertically.
 
-### Challenge 4: Create More Complex Backgrounds
+## 5. Turn health into a fuel gauge
 
-- Upload new background images to be used in the game
-- In the `scenery.js` file, add new scenery layers with different scroll speeds. Feel free to use vertical velocity as well for added effect.
-- Try adding scenery _below_ the ground layer to really spruce up the look of the game!
+The HUD displays fuel. Fuel drains once per frame, faster on later levels and
+loops; health-up and fuel-cell pickups replenish it. Running out of fuel starts
+the normal death sequence.
 
-### Challenge 5: Turn Health into a Fuel Gauge!
+## Check the challenges
 
-- To really make the game challenging, turn the health system into a fuel gauge that depletes over time. Players will require power-ups or other means to replenish their fuel.
-- One way to do this is to decrease the health variable slightly in the `moveGameObjects` function in `student.js`. A good starting number might be `0.01` per frame.
-- You can also adjust make the fuel deplete faster with each level by multiplying the depletion rate by the current level index plus one.
-- If you combine this with the endless levels challenge, you may want to add a new variable to `setup.js` to keep track of how many loops the player has completed, and increase the depletion rate based on that. The goal for players then is to see how far they can get before running out of fuel!
+- Collect a fuel pickup and confirm the fuel gauge increases.
+- Watch moving objects reverse direction at their `minY` and `maxY` bounds.
+- Reach the final goal to verify the game loops and grows more difficult.
+- Confirm the background layers continue to scroll without gaps.

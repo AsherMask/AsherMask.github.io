@@ -1,6 +1,15 @@
 # Runtime Neo 🏃‍➡️
 
-### A multi-level platformer game project using a beginner-friendly JavaScript engine.
+### An endless multi-level platformer built with a beginner-friendly JavaScript engine.
+
+The project is playable as delivered: use **Up/W** to jump, **Down/S** to duck,
+and **Space** to fire. Avoid hazards, shoot enemies, collect fuel, and reach
+each level's flag. The game loops after its third level and becomes faster as
+you progress.
+
+Implemented features include three complete levels, collisions, parallax
+scenery, moving hazards, a draining fuel gauge, and collectible fuel cells.
+See [BONUS_CHALLENGES.md](./BONUS_CHALLENGES.md) for the completed extensions.
 
 **Table of Contents**
 
@@ -47,9 +56,9 @@ Let’s bring your game to life!
 
 ## **Functions Recap**
 
-In this project, you will implement several functions that control the game world. Each function has a clear purpose and will be called automatically by the engine as the game runs.
+This project uses several functions to control the game world. Each function has a clear purpose and is called automatically by the engine as the game runs.
 
-Below is a quick summary of the function names you will implement:
+Below is a quick summary of the functions implemented in the completed project:
 
 - moveScenery()
 - generateLevel()
@@ -60,7 +69,7 @@ Below is a quick summary of the function names you will implement:
 - handleHallebotGenericCollisions()
 - triggerLevelTransition()
 
-These functions will be written inside designated sections in **student.js**. All of the functions already exist as empty shells, so your job is to fill in the logic.
+The completed implementations are in **student.js**. Use the TODOs below as a guided walkthrough of how each function works, and customize the level and scenery data to experiment.
 
 <br><br><br><br>
 
@@ -68,21 +77,21 @@ These functions will be written inside designated sections in **student.js**. Al
 
 ## **Work Flow: How to Navigate Through the Lesson Steps**
 
-🎯 **Goal:** Follow the TODO steps one at a time to gradually build your fully functional game.
+🎯 **Goal:** Use the TODO steps to understand and customize your completed game.
 
 ---
 
 ### Step-by-Step Work Flow
 
 1. 📂 **Open the `student.js` file** inside your Runtime Neo project folder.
-2. Carefully read each TODO section and write your code in the designated areas.
-3. 🖥️ **Preview your game often with Live Server** to check your progress.
+2. Read each TODO section and compare its steps with the completed implementation.
+3. Customize the levels and scenery, then use Live Server to preview your changes.
 
 ---
 
 ### 💡 Key Reminders
 
-- Read each TODO carefully before typing.
+- Read each TODO carefully before changing the implementation.
 - Preview frequently to confirm your game behaves correctly.
 - Do **not** edit `main.js` — it contains core logic used by your functions.
 
@@ -109,7 +118,7 @@ Confirm:
 
 - The canvas loads
 - HalleBot is visible
-- The placeholder level displays scenery and objects
+- The first authored level displays scenery and objects
 
 <br><br><br><br>
 
@@ -122,15 +131,14 @@ Confirm:
 ### Step-by-Step Instructions
 
 1. **🔍 Open the scenery.js file**  
-   Locate the building and lamp objects inside it.
+   Locate the star, moon, building, lamp, and underground layers inside it.
 
-2. **Review the starting code for buildings**  
-   The building object currently contains only one instance:
+2. **Review the scenery instances**
+   Each layer contains multiple instances with different sizes and positions.
 
-   - x: 0
-   - width: 100
-   - height: 300
-   - speedX: -2
+   - `x`: horizontal position
+   - `width` and `height`: image size
+   - `speedX`: layer speed relative to level scrolling
 
 3. **Add more building instances**
 
@@ -142,7 +150,8 @@ Confirm:
 
 4. **Repeat the process for lamps (light posts)**
    - Add multiple lamp objects
-   - Adjust their properties to create depth and parallax variation
+   - Adjust their properties to create depth and parallax variation.
+   - Stars and distant moons move slowly; buildings and lamps move faster.
 
 ---
 
@@ -168,7 +177,7 @@ Confirm:
 
 - Your `building.instances` array contains multiple objects with different sizes and positions.
 - Your `lamp.instances` array also contains several varied objects.
-- When you preview the game, you see multiple buildings and lamps displayed at the specified positions, but they will not be moving yet.
+- When you preview the game, you see several parallax layers; buildings and lamps scroll across the screen.
 
 <br><br><br><br>
 
@@ -194,7 +203,7 @@ Confirm:
    var buildingInstance = scenery.building.instances[i];
    ```
 
-   - For each instance, update its `x` position by adding both the instance’s `speedX` and the `currentLevel.speed` value.
+   - Update its `x` position with `instance.speedX - currentLevel.speed`.
 
 3. **Loop through `lamp.instances`**
 
@@ -213,10 +222,10 @@ Confirm:
 
    - When an instance has moved fully off the left side:
 
-     - Reset its `x` position to equal the corresponding `loopWidth` value for each instance type. For example, you would set building instances using the code:
+     - Add that layer's `loopWidth` to its `x` position so it loops while keeping the spacing between sibling instances. For example:
 
        ```javascript
-       buildingInstance.x = scenery.building.loopWidth;
+       buildingInstance.x += scenery.building.loopWidth;
        ```
 
 ---
@@ -230,7 +239,7 @@ Confirm:
   <tr>
     <td style="padding: 10px; color: #e2e2e2;">
       <strong>Parallax Movement</strong>: By giving different background objects different <code>speedX</code> values, you create a parallax effect where some layers move slower (farther away) and others move faster (closer to the camera).<br><br>
-      <strong>Level Speed</strong>: Adding each instance's <code>speedX</code> to <code>currentLevel.speed</code> lets you increase all scenery movement based on how fast the level is currently scrolling.<br><br>
+      <strong>Level Speed</strong>: Subtracting <code>currentLevel.speed</code> from each moving layer's <code>speedX</code> makes the world scroll left while allowing distant layers to drift more slowly.<br><br>
       <strong>Wrap-Around Logic</strong>: Checking when an object has moved fully off the screen (for example, when <code>x + width &lt; 0</code>) and then moving it to the right side creates a continuous, looping background.
     </td>
   </tr>
@@ -568,7 +577,7 @@ Use this table to help customize how each object behaves in your level.
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;"><code>contactHealthChange</code></td>
-    <td style="padding: 10px; color: #e2e2e2;">How the player's health changes when colliding with this object. Negative values damage Hallebot; positive values heal.</td>
+    <td style="padding: 10px; color: #e2e2e2;">How the player's fuel (stored in the <code>health</code> variable) changes when colliding with this object. Negative values drain fuel; positive values replenish it.</td>
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;"><code>contactScoreChange</code></td>
@@ -576,7 +585,7 @@ Use this table to help customize how each object behaves in your level.
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;"><code>projectileHealthChange</code></td>
-    <td style="padding: 10px; color: #e2e2e2;">How the player's health changes when the object is destroyed by a projectile. This can be used for hazards or powerups that can be activated from a distance.</td>
+    <td style="padding: 10px; color: #e2e2e2;">How the player's fuel changes when the object is destroyed by a projectile.</td>
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;"><code>projectileScoreChange</code></td>
@@ -596,7 +605,7 @@ Use this table to help customize how each object behaves in your level.
 
 ### Type and Kind Reference
 
-At the moment, there is only one "kind" available for each "type," but you can always add in additional kinds later for more variety by uploading new assets and updating the engine code. See the Bonus Challenges for more info! Below are the available types and their kinds without completing the challenges.
+The game includes additional kinds as well as the original object kinds. These are registered in `DEFAULT_VALUES` and have matching image elements in `index.html`.
 
 <table style="width: 50%; margin-left: auto; margin-right: auto; border-collapse: collapse; margin-top: 15px; background-color: #2c2c2c; border: 1px solid #444; border-radius: 8px; overflow: hidden;">
   <tr>
@@ -605,7 +614,7 @@ At the moment, there is only one "kind" available for each "type," but you can a
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;">obstacle</td>
-    <td style="padding: 10px; color: #e2e2e2;">spikes</td>
+    <td style="padding: 10px; color: #e2e2e2;">spikes, movingSpikes</td>
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;">enemy</td>
@@ -613,7 +622,7 @@ At the moment, there is only one "kind" available for each "type," but you can a
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;">powerup</td>
-    <td style="padding: 10px; color: #e2e2e2;">healthUp</td>
+    <td style="padding: 10px; color: #e2e2e2;">healthUp, fuelCell</td>
   </tr>
   <tr>
     <td style="padding: 10px; color: #e2e2e2;">goal</td>
@@ -639,9 +648,9 @@ At the moment, there is only one "kind" available for each "type," but you can a
   - **Exactly 1 goal** placed near the end of the level
 - Each object uses appropriate properties (such as `width`, `height`, `speedX`, `contactHealthChange`, etc.) to control its size, movement, and behavior.
 - When you run the game:
-  - You can clearly see your custom layout.
-  - The player must travel through your designed level to reach the goal.
-  - Enemies and powerups will _not_ interact with HalleBot or projectiles yet — that comes in the next steps!
+  - You can clearly see the designed layout.
+  - HalleBot must travel through the level to reach its goal.
+  - Enemies, hazards, and powerups interact with HalleBot and projectiles.
 
 <br><br><br><br>
 
@@ -702,7 +711,7 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
 
 7. **Handle the collision**
 
-   - When a collision is detected (the condition is true), call the helper function `handleProjectileObjectCollision(i, j)`. This function will handle damage and score calculations for you.
+   - When a collision is detected, call `handleProjectileObjectCollision(j, i)`: the helper expects the projectile index first, then the game-object index.
 
 ---
 
@@ -716,7 +725,7 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
     <td style="padding: 10px; color: #e2e2e2;">
       <strong>Nested Loops</strong>: Using a loop inside another loop lets you compare every projectile to every game object. The outer loop uses <code>i</code>, the inner loop uses <code>j</code>.<br><br>
       <strong>Collision Detection</strong>: The helper function <code>isCollidingWithProjectile(projectile, object)</code> checks whether a projectile is overlapping a game object, based on their positions and sizes.<br><br>
-      <strong>Collision Handling</strong>: Once a collision is found, calling <code>handleProjectileObjectCollision(i, j)</code> applies the result (such as reducing <code>hp</code>, updating score, or removing the object/projectile).<br><br>
+      <strong>Collision Handling</strong>: Once a collision is found, calling <code>handleProjectileObjectCollision(j, i)</code> applies the result (such as reducing <code>hp</code>, updating score, or removing the object/projectile).<br><br>
     </td>
   </tr>
 </table>
@@ -798,7 +807,7 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
 
 ## **TODO 10: triggerLevelTransition**
 
-🎯 **Goal:** Move to the next level when HalleBot reaches an end marker and complete the game if all levels are finished!
+🎯 **Goal:** Move to the next level when HalleBot reaches an end marker and make the game endless!
 
 ---
 
@@ -809,23 +818,20 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
    - Open **student.js**
    - Find the function named `triggerLevelTransition`
 
-2. **Increase the level index**
+2. **Advance or loop the level index**
 
-   - Inside the function, increase the value of `currentLevelIndex` by `1`.
+   - Increase `currentLevelIndex` by one.
+   - When the index reaches `LEVELS.length`, set it back to zero and increment `completedLoops`.
 
-3. **Update `currentLevel`**
+3. **Update `currentLevel` and increase the difficulty**
 
-   - Set `currentLevel` equal to the level at the new index inside the `levels` array.
+   - Copy the selected `LEVELS` entry into `currentLevel`.
+   - Add `0.5` to the scrolling speed for each completed loop and show the loop number in the level name.
 
-4. **Reset the gameObjects array**
+4. **Load the next level**
 
-   - Before generating the next level, set `gameObjects` to an empty array. This clears all objects from the previous level.
-
-5. **Check if the player reached the final level**
-
-   - After resetting the `gameObjects` array, check if `currentLevelIndex` is greater than or equal to `levels.length`.
-   - If it is, that means there are no more levels left.
-   - In that case, set `player.winConditionMet` to `true` to mark that the player has completed the game.
+   - Clear the previous objects and projectiles, then call `generateLevel()`.
+   - Completing the final authored level starts a new loop instead of ending the game.
 
 ---
 
@@ -838,9 +844,9 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
   <tr>
     <td style="padding: 10px; color: #e2e2e2;">
       <strong>Level Indexing</strong>: <code>currentLevelIndex</code> keeps track of which level the player is currently on. Increasing it points to the next level.<br><br>
-      <strong>Level Data</strong>: Each level’s layout and settings come from the <code>levels</code> array. Updating <code>currentLevel</code> swaps in the new configuration.<br><br>
+      <strong>Level Data</strong>: Each level’s layout and settings come from <code>LEVELS</code>. Updating <code>currentLevel</code> swaps in the new configuration.<br><br>
       <strong>Resetting State</strong>: Clearing <code>gameObjects</code> ensures old objects don’t carry over into the next level.<br><br>
-      <strong>Win Condition</strong>: If the player moves past the last level in the list, <code>player.winConditionMet</code> is set to <code>true</code> to indicate victory.
+      <strong>Endless Mode</strong>: Completing the final level starts another loop with increased speed and fuel consumption.
     </td>
   </tr>
 </table>
@@ -854,7 +860,7 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
 - Completing a level causes the game to load the next one.
 - `currentLevelIndex` increases exactly once per goal reached. Check the HUD to make sure the level name updates correctly.
 - If completing a level that isn't the last level, you should see the new level's objects appear and scenery moving at the new level's speed.
-- When the index moves past the final level, `player.winConditionMet` becomes `true` and you should see a victory message.
+- After the final level, Level 1 starts again with a higher loop number and increased difficulty.
 
 <br><br><br><br>
 
@@ -952,17 +958,18 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
 
 ## Explore Bonus Challenges
 
-We've compiled a list of optional **bonus challenges** for you to take this project to the next level.
+The game's bonus challenges are already implemented:
 
-- Access them on [GitHub here](https://github.com/OperationSpark/runtime-neo/blob/master/BONUS_CHALLENGES.md)
+- Read [BONUS_CHALLENGES.md](./BONUS_CHALLENGES.md) for a feature summary and in-game checks.
 
 <!-- 4 line breaks between TODOs -->
 
 <br><br><br><br>
 
-## **TODO 13: Go Live**
+## **TODO 13: Publish Runtime Neo**
 
-🎯 **Goal:** Push your changes to GitHub and make your bouncing box game go live.
+🎯 **Goal:** Push your changes to GitHub Pages and make Runtime Neo available
+from your portfolio.
 
 ---
 
@@ -990,7 +997,7 @@ We've compiled a list of optional **bonus challenges** for you to take this proj
 
 - Visit the site `your-github-username.github.io` to see your website live on the internet. If it doesn’t appear immediately, wait a few minutes and try refreshing your page.
   - Make sure to replace the text `"your-github-username"` with your actual github username when entering the URL in your browser.
-- Navigate to your Bouncing Box link on your Portfolio page to ensure it is live on the web.
+- Navigate to your Runtime Neo link on your Portfolio page to ensure it is live on the web.
   - You might need to refresh your page for your changes to appear.
 
 <br>
@@ -999,6 +1006,6 @@ We've compiled a list of optional **bonus challenges** for you to take this proj
 
 # 🎉🎉🎉 Congratulations!
 
-You’ve built a full Runtime Neo multi-level platformer!  
-Your game now includes custom scenery, moving objects, collisions, and complete level transitions.  
-Share your creation and challenge friends to beat your levels! 🎉🎉🎉
+Runtime Neo now includes three authored stages, looping progression, moving
+objects, collisions, layered scenery, and a fuel challenge. Customize the
+levels and scenery to make the endless run your own! 🎉
