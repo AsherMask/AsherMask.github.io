@@ -68,7 +68,6 @@ $(function () {
     handleProjectileCollisions(); // Check for projectile collisions with enemies
     moveHallebot(); // Handles jumping and gravity
     handleHallebotGenericCollisions(); // Check for player collisions with interactables
-    handleHallebotPlatformCollisions(); // Check for player collisions with platforms
     handleHallebotGoalCollision(); // Check for player reaching the goal
     cleanupGameObjects(); // Remove any objects or projectiles marked for deletion
     keyboardControlActions(); // checks key presses and makes the player jump or shoot
@@ -207,41 +206,6 @@ function isGenericCollision(gameObject) {
     player.y < gameObject.y &&
     !gameObject.hitHallebot // this should be undefined until hit
   );
-}
-
-function handleHallebotPlatformCollisions() {
-  // Platforms are handled in moveHallebot to manage ground collisions; we don't need to handle the case of landing from the top again here
-
-  for (let i = 0; i < gameObjects.length; i++) {
-    const gameObject = gameObjects[i];
-    if (gameObject.type !== "platform") {
-      continue;
-    }
-
-    // first, check if there is any collision at all
-    if (
-      player.x + player.hitBoxWidth > gameObject.x &&
-      player.x < gameObject.x + gameObject.width &&
-      player.y + player.hitBoxHeight > gameObject.y - gameObject.height &&
-      player.y < gameObject.y
-    ) {
-      // We want Hallebot to pass through from underneath only if the platform has 0 hp; otherwise stop vertical movement
-      if (gameObject.hp > 0 && player.speedY < 0) {
-        player.speedY = 0;
-
-        player.y = gameObject.y; // position player below platform; platforms draw from the bottom up
-        continue; // we don't want to change health or score from bottom collisions
-      }
-
-      // only affect health and score the first time the platform is hit
-      if (!gameObject.hitHallebot) {
-        gameObject.hitHallebot = true;
-        score += gameObject.contactScoreChange;
-        health += gameObject.contactHealthChange;
-        health = Math.max(0, Math.min(100, health));
-      }
-    }
-  }
 }
 
 function handleHallebotGoalCollision() {

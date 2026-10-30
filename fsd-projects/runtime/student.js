@@ -1,6 +1,6 @@
 function moveScenery() {
   const fuelDrainPerFrame =
-    0.005 * (1 + currentLevelIndex * 0.25 + completedLoops * 0.25);
+    0.01 * (currentLevelIndex + 1 + completedLoops * LEVELS.length);
   health = Math.max(0, health - fuelDrainPerFrame);
 
   if (health === 0 && currentAnimationType !== animationTypes.frontDeath) {

@@ -16,7 +16,7 @@ level speed and fuel consumption, and the level HUD shows the loop number.
 ## 3. Add vertically moving objects
 
 Objects can use `speedY`, `minY`, and `maxY` in `levels.js`. Their vertical
-movement reverses at the configured bounds. Several moving hazards and enemies
+movement reverses at the configured bounds. Moving hazards in the levels
 demonstrate the behavior.
 
 ## 4. Create more complex backgrounds
@@ -27,11 +27,9 @@ layers also move vertically.
 
 ## 5. Turn health into a fuel gauge
 
-The HUD displays fuel. Fuel drains by `0.005` per frame on the first level, with
-a gradual increase on later levels and loops. Health-up and fuel-cell pickups
-replenish it; running out of fuel starts the normal death sequence. Hazard
-damage is balanced so a missed jump is recoverable rather than instantly
-ending a run.
+The HUD displays fuel. Fuel drains over time, faster on later levels and loops.
+Health-up and fuel-cell pickups replenish it; running out of fuel starts the
+normal death sequence.
 
 ## Check the challenges
 
