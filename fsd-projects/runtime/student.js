@@ -1,9 +1,7 @@
 function moveScenery() {
-  const loopDifficulty = completedLoops * LEVELS.length;
-  health = Math.max(
-    0,
-    health - 0.01 * (currentLevelIndex + 1 + loopDifficulty)
-  );
+  const fuelDrainPerFrame =
+    0.005 * (1 + currentLevelIndex * 0.25 + completedLoops * 0.25);
+  health = Math.max(0, health - fuelDrainPerFrame);
 
   if (health === 0 && currentAnimationType !== animationTypes.frontDeath) {
     currentAnimationType = animationTypes.frontDeath;

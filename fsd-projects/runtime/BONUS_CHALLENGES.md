@@ -27,9 +27,11 @@ layers also move vertically.
 
 ## 5. Turn health into a fuel gauge
 
-The HUD displays fuel. Fuel drains once per frame, faster on later levels and
-loops; health-up and fuel-cell pickups replenish it. Running out of fuel starts
-the normal death sequence.
+The HUD displays fuel. Fuel drains by `0.005` per frame on the first level, with
+a gradual increase on later levels and loops. Health-up and fuel-cell pickups
+replenish it; running out of fuel starts the normal death sequence. Hazard
+damage is balanced so a missed jump is recoverable rather than instantly
+ending a run.
 
 ## Check the challenges
 

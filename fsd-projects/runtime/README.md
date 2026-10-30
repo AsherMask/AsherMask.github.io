@@ -494,7 +494,7 @@ Confirm:
 
 ## **TODO 7: Customize Your First Level**
 
-🎯 **Goal:** Update `levels.js` so that **Level 1** now has your own custom layout!
+🎯 **Goal:** Explore the completed **Level 1** layout in `levels.js` and adjust it to your own design!
 
 ---
 
@@ -866,7 +866,7 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
 
 # TODO 11: Customize Your Second Level
 
-🎯 **Goal:** Modify the second level using everything you’ve learned.
+🎯 **Goal:** Explore the completed second level and modify it using everything you’ve learned.
 
 ---
 
@@ -916,7 +916,7 @@ When you finish this TODO, Hallebot should be able to shoot obstacles and destro
 
 # TODO 12: Make a Third Level from Scratch
 
-🎯 **Goal:** Create an original level that is entirely your own!
+🎯 **Goal:** Explore the completed third level and then create an original level of your own!
 
 ---
 
