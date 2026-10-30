@@ -112,8 +112,7 @@ var Gamification = (function () {
   // Create player 1 (always green, uses WASD)
   function createPlayer1() {
     player1 = draw.randomCircleInArea(canvas, true, true, "#00FF00", 3);
-    player1.radius = 15;
-    player1.scaleX = player1.scaleY = 1.5;
+    setPlayerRadius(player1, 15);
 
     // Set consistent start position
     player1.x = PLAYER_START_POSITIONS.player1.x;
@@ -147,8 +146,7 @@ var Gamification = (function () {
   function createPlayer2() {
     // Create player2 using the same method as player1 but with blue color
     player2 = draw.randomCircleInArea(canvas, true, true, "#0080FF", 3);
-    player2.radius = 15;
-    player2.scaleX = player2.scaleY = 1.5;
+    setPlayerRadius(player2, 15);
 
     // Set consistent start position
     player2.x = PLAYER_START_POSITIONS.player2.x;
@@ -383,13 +381,17 @@ var Gamification = (function () {
     var dx = circle1.x - circle2.x;
     var dy = circle1.y - circle2.y;
     var distance = Math.sqrt(dx * dx + dy * dy);
-
-    // Account for scaling in collision detection
-    var radius1 = (circle1.radius || 10) * (circle1.scaleX || 1);
-    var radius2 = (circle2.radius || 10) * (circle2.scaleX || 1);
-
-    var combinedRadius = radius1 + radius2;
+    var combinedRadius = getActualRadius(circle1) + getActualRadius(circle2);
     return distance < combinedRadius;
+  }
+
+  function setPlayerRadius(player, radius) {
+    if (!player.baseRadius) {
+      player.baseRadius = Math.max(player.width || 0, player.height || 0) / 2 || 10;
+    }
+
+    player.radius = Math.min(radius, Math.min(canvas.width, canvas.height) / 2);
+    player.scaleX = player.scaleY = player.radius / player.baseRadius;
   }
 
   // Get the actual effective radius of a circle, accounting for scaling
@@ -401,9 +403,8 @@ var Gamification = (function () {
       return circle.radius || 15;
     }
     
-    // For regular circles, use the radius property with proper fallback
-    // Original circles have radius between 5-20, so use 12 as a reasonable fallback
-    return circle.radius || 12;
+    var drawnRadius = Math.max(circle.width || 0, circle.height || 0) / 2;
+    return (circle.radius || drawnRadius || 12) * (circle.scaleX || 1);
   }
 
   // Check if players are currently invincible (first 5 seconds of game)
@@ -582,14 +583,15 @@ function updatePlayer2() {
   // Absorb a circle and grow the player
   function absorb(absorber, absorbed, index, playerIndex) {
     // Calculate new size (area-based growth)
-    var absorberArea = Math.PI * Math.pow(absorber.radius, 2);
-    var absorbedArea = Math.PI * Math.pow(absorbed.radius || 10, 2);
+    var absorberRadius = getActualRadius(absorber);
+    var absorbedRadius = getActualRadius(absorbed);
+    var absorberArea = Math.PI * Math.pow(absorberRadius, 2);
+    var absorbedArea = Math.PI * Math.pow(absorbedRadius, 2);
     var newArea = absorberArea + absorbedArea * 0.3; // Gain 30% of absorbed area for faster growth
     var newRadius = Math.sqrt(newArea / Math.PI);
 
     // Update absorber size
-    absorber.radius = newRadius;
-    absorber.scaleX = absorber.scaleY = newRadius / 10;
+    setPlayerRadius(absorber, newRadius);
 
     // Remove absorbed circle (only if it's from the circles array)
     if (index >= 0) {
@@ -605,9 +607,9 @@ function updatePlayer2() {
 
     // Update the correct player's score
     if (playerIndex === 1) {
-      player1Score += Math.floor(absorbed.radius || 10);
+      player1Score += Math.floor(absorbedRadius);
     } else if (playerIndex === 2) {
-      player2Score += Math.floor(absorbed.radius || 10);
+      player2Score += Math.floor(absorbedRadius);
     }
 
     updateScore();

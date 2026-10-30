@@ -12,6 +12,12 @@ const chai = require('chai'),
     canvas = opspark.canvas,
     init = require('../js/init.js');
 
+const gamification = {
+    init: sinon.spy(),
+    update: sinon.spy()
+};
+global.Gamification = gamification;
+
 describe('Circularity', function() {
     let game, circle, circles, update, drawCircle, checkCirclePosition;
 
@@ -29,7 +35,27 @@ describe('Circularity', function() {
     });
 
     after(function(done) {
+        delete global.Gamification;
         done();
+    });
+
+    describe('Bonus gamification integration', function() {
+        it('should initialize gamification with the game references', function() {
+            expect(gamification.init.calledOnce).to.be.true;
+            expect(gamification.init.firstCall.args[0]).to.deep.equal({
+                canvas: canvas,
+                view: view,
+                draw: draw,
+                physikz: physikz,
+                circles: circles,
+                game: game
+            });
+        });
+
+        it('should update gamification after updating the circles', function() {
+            update();
+            expect(gamification.update.called).to.be.true;
+        });
     });
 
     describe('TODO 1: should declare variables', function() {
@@ -173,6 +199,23 @@ describe('Circularity', function() {
             circle = { x: 1, y: -5, radius: 1 };
             checkCirclePosition(circle);
             expect(circle.y === canvas.height + circle.radius).to.be.true;
+        });
+
+        it('should allow a circle to re-enter after wrapping offscreen', function() {
+            circle = { x: canvas.width + 20, y: 1, radius: 10 };
+            checkCirclePosition(circle);
+            expect(circle.x).to.equal(-circle.radius);
+
+            circle.x += 1;
+            checkCirclePosition(circle);
+            expect(circle.x).to.equal(-circle.radius + 1);
+        });
+
+        it('should keep circles larger than the canvas centered on that axis', function() {
+            circle = { x: 0, y: 0, radius: canvas.width };
+            checkCirclePosition(circle);
+            expect(circle.x).to.equal(canvas.width / 2);
+            expect(circle.y).to.equal(canvas.height / 2);
         });
     });
 

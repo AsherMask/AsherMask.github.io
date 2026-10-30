@@ -1,21 +1,17 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
+body.home-page {
   margin: 0;
-  background: #7525d1;
-  color: #222;
+  background: var(--paper);
+  color: var(--ink);
   font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
-#all-contents {
+body.home-page #all-contents {
   max-width: 1500px;
   min-height: 100vh;
   margin: 0 auto;
   padding: 32px 40px;
 }
-main {
+body.home-page main {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) minmax(420px, 1.6fr);
   align-items: center;
@@ -23,56 +19,49 @@ main {
   gap: clamp(32px, 5vw, 80px);
 }
 
-.sidebar {
+body.home-page .sidebar {
   width: 100%;
 }
 
-.content {
+body.home-page .content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
 }
-h2 {
+body.home-page h2 {
   margin: 0;
   font-size: clamp(4rem, 10vw, 7rem);
   line-height: 0.9;
   font-weight: 900;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  color: #000;
+  color: var(--forest);
 }
 
-.content > p {
+body.home-page .content > p {
   margin: 0;
-  color: #999;
+  color: var(--muted);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   line-height: 1.4;
 }
-h2 {
-  color: #ffffff; /* bright accent */
-}
-
-.content p {
-  color: #a8b2d8;
-}
-#interests {
+body.home-page #interests {
   margin-top: 32px;
   width: 100%;
 }
 
-#interests h3 {
+body.home-page #interests h3 {
   margin: 0 0 12px;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #aaa;
+  color: var(--muted);
 }
 
-#interests ul {
+body.home-page #interests ul {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -81,13 +70,13 @@ h2 {
   gap: 8px;
 }
 
-#interests li {
-  color: #933a96;
+body.home-page #interests li {
+  color: var(--forest);
   font-size: 1rem;
   font-weight: 600;
   padding: 10px 20px;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 100px;
   transition:
     background 0.25s ease,
@@ -96,13 +85,13 @@ h2 {
   cursor: default;
 }
 
-#interests li:hover {
-  background: #7b2f92;
-  color: #fff;
-  border-color: #832567;
+body.home-page #interests li:hover {
+  background: var(--forest);
+  color: var(--surface);
+  border-color: var(--forest);
   transform: translateY(-2px);
 }
-.sidebar-img {
+body.home-page .sidebar-img {
   width: 100%;
   max-width: 760px;
   aspect-ratio: 3 / 4;
@@ -117,34 +106,28 @@ h2 {
     box-shadow 0.4s ease;
 }
 
-.sidebar-img:hover {
+body.home-page .sidebar-img:hover {
   filter: grayscale(0%);
   transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
-  width: 100%;
-  max-width: 760px;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  display: block;
   border-radius: 24px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
-nav {
-  background: #410388;
-  border-color: #1a1a2e;
+body.home-page nav {
+  background: var(--forest);
+  border-color: var(--forest);
 }
 
-nav h1 {
+body.home-page nav h1 {
   color: #ffffff;
 }
 
-.nav-li a {
-  color: #a8b2d8;
+body.home-page .nav-li a {
+  color: var(--surface);
 }
 
-.nav-li a:hover {
-  background: #e94560;
-  color: #fff;
+body.home-page .nav-li a:hover {
+  background: var(--forest-light);
+  color: var(--forest);
 }
 :root {
   color-scheme: light;
