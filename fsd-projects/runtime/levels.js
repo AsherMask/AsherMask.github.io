@@ -3,7 +3,7 @@
 const LEVELS = [
   {
     name: "Level 1",
-    speed: 2,
+    speed: 2.5,
     gameObjects: [
       { type: "obstacle", kind: "spikes", x: 500, y: groundY },
       { type: "obstacle", kind: "movingSpikes", x: 1500, y: groundY - 120, speedY: 1.5, minY: 100, maxY: groundY - 60 },
@@ -21,7 +21,7 @@ const LEVELS = [
   },
   {
     name: "Level 2",
-    speed: 3,
+    speed: 3.5,
     gameObjects: [
       { type: "obstacle", kind: "spikes", x: 500, y: groundY },
       { type: "obstacle", kind: "movingSpikes", x: 1500, y: groundY - 120, speedY: 2, minY: 100, maxY: groundY - 60 },
@@ -45,7 +45,7 @@ const LEVELS = [
   },
   {
     name: "Level 3",
-    speed: 3.5,
+    speed: 4,
     gameObjects: [
       { type: "obstacle", kind: "spikes", x: 500, y: groundY },
       { type: "obstacle", kind: "movingSpikes", x: 1400, y: groundY - 120, speedY: 2, minY: 100, maxY: groundY - 60 },
